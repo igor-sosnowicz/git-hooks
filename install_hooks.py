@@ -1,4 +1,4 @@
-"""This is the main module of the application."""
+"""The module installing hooks."""
 
 from enum import Enum
 import os
