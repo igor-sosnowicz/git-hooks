@@ -13,7 +13,9 @@ if [[ -d "$SCRIPT_DIR" ]]; then
             echo "Running script: $script_name"
             "$script"  # Execute the script
         else
-            echo "Skipping non-executable script: $script"
+            YELLOW='\e[33m'
+            RESET='\e[0m'
+            echo -e "${YELLOW}Skipping non-executable script: $script${RESET}"
         fi
     done
 fi
