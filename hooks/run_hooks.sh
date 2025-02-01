@@ -17,6 +17,5 @@ if [[ -d "$SCRIPT_DIR" ]]; then
         fi
     done
 else
-    echo "Directory not found: $SCRIPT_DIR"
-    exit 1
+    echo "Skipping $SCRIPT_DIR: directory not found."
 fi
