@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# Search for TODO or FIXME in .py and .cpp files
-if grep -r --include="*.py" --include="*.cpp" "TODO\|FIXME" .; then
-    echo "You have TODO or FIXME in your code. Please fix them before committing."
+# Define the patterns to search for
+PATTERNS='TODO\|FIXME\|HACK\|NOTE\|WIP'
+
+# Check for the presence of any of the defined patterns in staged files
+if git grep --cached -q -E "$PATTERNS"; then
+    echo 'Your commit contains TODO, FIXME, HACK, NOTE, or WIP comments. Resolve them before committing.'
     exit 1
 fi
 
