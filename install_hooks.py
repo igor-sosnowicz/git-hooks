@@ -39,7 +39,7 @@ def main() -> None:
                     script_path = os.path.join(stage_path, script)
 
                     if os.path.isfile(script_path) and os.access(script_path, os.X_OK):
-                        hook_file.write(f"echo Running {script_path}...\n")
+                        hook_file.write(f"echo Running {Path(script_path).name}...\n")
                         hook_file.write(
                             f'"{script_path}" || {{ echo "Error: {script_path} failed."; exit 1; }}\n'
                         )
