@@ -1,11 +1,13 @@
 """This is the main module of the application."""
 
+from enum import Enum
 import os
 from pathlib import Path
+import shutil
 import stat
 
 
-class Color:
+class Color(Enum):
     """Define colors for the terminal output."""
 
     RESET = "\033[0m"
@@ -28,38 +30,38 @@ def make_executable(file_path: Path) -> None:
 
 def main() -> None:
     """Install the hooks in the .git/hooks directory."""
-    hooks_dir = "hooks"
-    git_hooks_dir = ".git/hooks"
+    # Define the source and destination directories
+    source_file = "hooks/run_hooks.sh"
+    destination_dir = ".git/hooks"
 
-    # Iterate over each subdirectory in the hooks directory
-    for stage_dir in os.listdir(hooks_dir):
-        stage_path = os.path.join(hooks_dir, stage_dir)
+    # List of git stages
+    git_stages = (
+        "applypatch-msg",
+        "commit-msg",
+        "fsmonitor-watchman",
+        "post-update",
+        "pre-applypatch",
+        "pre-commit",
+        "pre-merge-commit",
+        "pre-push",
+        "pre-rebase",
+        "pre-receive",
+        "prepare-commit-msg",
+        "update",
+    )
 
-        if not os.path.isdir(stage_path):
-            continue
+    # Ensure the destination directory exists
+    os.makedirs(destination_dir, exist_ok=True)
 
-        hook_file_path = os.path.join(git_hooks_dir, stage_dir)
-        # Create or overwrite the hook script
-        with open(hook_file_path, "w", encoding="utf-8") as hook_file:
-            hook_file.write("#!/bin/bash\n\n")
-            hook_file.write(f"# Run scripts for the {stage_dir} hook\n\n")
+    # Copy the hook script to each git stage
+    for stage in git_stages:
+        destination_file = os.path.join(destination_dir, stage)
+        shutil.copyfile(source_file, destination_file)
+        make_executable(Path(destination_file))
 
-            # Iterate over each script in the current stage directory
-            for script in os.listdir(stage_path):
-                script_path = os.path.join(stage_path, script)
-
-                if os.path.isfile(script_path) and os.access(script_path, os.X_OK):
-                    hook_file.write(f"echo Running {Path(script_path).name}...\n")
-                    hook_file.write(
-                        f'"{script_path}" || {{ echo "{Color.RED}Error: {script_path} failed.{Color.RESET}"; exit 1; }}\n'
-                    )
-                else:
-                    raise PermissionError(f"{script_path} is not executable.")
-
-        make_executable(Path(hook_file_path))
-        print(f"Installed {stage_dir} hook successfully.")
-
-    print(f"{Color.GREEN}All hooks installed successfully.{Color.RESET}")
+    print(
+        f"{Color.GREEN.value}Successfully installed hooks in the .git/hooks directory.{Color.RESET.value}"
+    )
 
 
 if __name__ == "__main__":
