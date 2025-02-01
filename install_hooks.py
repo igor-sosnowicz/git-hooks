@@ -10,6 +10,8 @@ class Color:
 
     RESET = "\033[0m"
     YELLOW = "\033[0;33m"
+    RED = "\033[0;31m"
+    GREEN = "\033[0;32m"
 
 
 def make_executable(file_path: Path) -> None:
@@ -48,17 +50,15 @@ def main() -> None:
                     if os.path.isfile(script_path) and os.access(script_path, os.X_OK):
                         hook_file.write(f"echo Running {Path(script_path).name}...\n")
                         hook_file.write(
-                            f'"{script_path}" || {{ echo "Error: {script_path} failed."; exit 1; }}\n'
+                            f'"{script_path}" || {{ echo "{Color.RED}Error: {script_path} failed.{Color.RESET}"; exit 1; }}\n'
                         )
                     else:
-                        hook_file.write(
-                            f'echo -e "{Color.YELLOW}Skipping {script_path} (not executable).{Color.RESET}"\n'
-                        )
+                        raise PermissionError(f"{script_path} is not executable.")
 
             make_executable(Path(hook_file_path))
             print(f"Installed {stage_dir} hook successfully.")
 
-    print("All hooks installed successfully.")
+    print(f"{Color.GREEN}All hooks installed successfully.{Color.RESET}")
 
 
 if __name__ == "__main__":
