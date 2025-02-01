@@ -16,6 +16,4 @@ if [[ -d "$SCRIPT_DIR" ]]; then
             echo "Skipping non-executable script: $script"
         fi
     done
-else
-    echo "Skipping $SCRIPT_DIR: directory not found."
 fi
