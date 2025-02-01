@@ -4,10 +4,13 @@ import os
 from pathlib import Path
 import stat
 
+
 class Color:
     """Define colors for the terminal output."""
+
     RESET = "\033[0m"
     YELLOW = "\033[33m"
+
 
 def make_executable(file_path: Path) -> None:
     """
